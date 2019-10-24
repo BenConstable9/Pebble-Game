@@ -1,2 +1,2 @@
 # Pebble Game
- Pebble Game Coursework
+ Pebble Game Paired-Programming Coursework

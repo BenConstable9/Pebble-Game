@@ -8,6 +8,40 @@ public class PebbleGame {
     private Bag[] blackBags = new Bag[3];
     private Bag[] whiteBags = new Bag[3];
 
+    private boolean gameWon = false;
+    private int winner;
+
+    public boolean isGameWon() {
+        return gameWon;
+    }
+
+    public void setGameWon(boolean gameWon) {
+        this.gameWon = gameWon;
+    }
+
+    public void setWinner(int winner) {
+        this.winner = winner;
+    }
+
+    private synchronized boolean hasWon(ArrayList<Integer> playerHand, int playerNumber){
+        if (this.gameWon) {
+            return this.gameWon;
+        } else {
+            int playerHandValue = 0;
+            for (int i = 0; i < playerHand.size(); i++){
+                playerHandValue += playerHand.get(i);
+            }
+            if (playerHandValue == 100){
+                this.winner = playerNumber;
+                this.gameWon = true;
+                System.out.println("Player: " + playerNumber + " has won with " + playerHand);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
     public PebbleGame(int numberOfPlayers, String[] bagLocations) {
         //generate number of players in different threads
         this.numberOfPlayers = numberOfPlayers;
@@ -23,10 +57,8 @@ public class PebbleGame {
             Runnable runnable = new Player(j);
 
             Thread thread = new Thread(runnable);
-            thread.start();
             thread.setName("Player " + j);
-            System.out.println(thread.getName());
-            //todo build intiial picks
+            thread.start();
         }
     }
 
@@ -79,6 +111,7 @@ public class PebbleGame {
     class Player implements Runnable {
         private ArrayList<Integer> playerHand = new ArrayList<>();
         private int playerNumber;
+        private int previousBag;
 
         public Player (int playerNumber) {
             this.playerNumber = playerNumber;
@@ -101,7 +134,6 @@ public class PebbleGame {
                 int n = rand.nextInt(3);
 
                 Bag choosenBag = blackBags[n];
-                //todo finish
                 int newPebble = choosenBag.pickPebble();
 
                 if (newPebble == -1000) {
@@ -110,12 +142,28 @@ public class PebbleGame {
                 } else {
                     this.playerHand.add(newPebble);
                     picked = true;
+                    this.previousBag = n;
 
                     //See if the bags need to be swapped
                     Bag.swapBags(blackBags[n], whiteBags[n]);
+                    System.out.println("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
+
                 }
             }
         }
+
+        public void discardPebble(){
+            Random rand = new Random();
+            int i = rand.nextInt(9);
+
+            Bag choosenBag = whiteBags[this.previousBag];
+            int removedPebble = this.playerHand.remove(i);
+            choosenBag.bagPebbles.add(removedPebble);
+
+            System.out.println("Player " + playerNumber + " has discarded " + removedPebble + " from bag " + i + "\nPlayer " + playerNumber + " hand is " + playerHand);
+
+        }
+
 
         @Override
         public void run() {
@@ -123,7 +171,15 @@ public class PebbleGame {
             for (int i = 0; i < 10; i ++) {
                 this.pickBagAndPebble();
             }
-            System.out.println(this.playerHand);
+
+            while (!hasWon(this.playerHand, this.playerNumber)){
+                //System.out.println(this.playerHand);
+                this.discardPebble();
+                this.pickBagAndPebble();
+            }
+
+
+
         }
     }
 }

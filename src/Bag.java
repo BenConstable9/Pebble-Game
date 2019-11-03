@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Bag {
     private String name;
-    private ArrayList<Integer> bagPebbles = new ArrayList<>();
+    public ArrayList<Integer> bagPebbles = new ArrayList<>();
     private int numberOfPlayers;
 
     public Bag(String name, int numberOfPlayers) {
@@ -29,7 +29,6 @@ public class Bag {
             e.printStackTrace();
         }
 
-        //todo put 11* back in
         if (bagPebblesString.length >= (1 * numberOfPlayers)) {
             //iterate through
             for (String bagPebbleString : bagPebblesString) {
@@ -52,11 +51,6 @@ public class Bag {
         }
     }
 
-    public ArrayList<Integer> getBagPebbles() {
-        return bagPebbles;
-    }
-
-    //todo make synchronized
     synchronized int pickPebble() {
         int numberPebbles = this.bagPebbles.size();
 

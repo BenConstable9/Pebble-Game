@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class Bag {
     private String name;
@@ -28,7 +29,8 @@ public class Bag {
             e.printStackTrace();
         }
 
-        if (bagPebblesString.length >= (11 * numberOfPlayers)) {
+        //todo put 11* back in
+        if (bagPebblesString.length >= (1 * numberOfPlayers)) {
             //iterate through
             for (String bagPebbleString : bagPebblesString) {
                 try {
@@ -47,6 +49,31 @@ public class Bag {
         } else {
             //todo work out this
             System.out.println("Bag not big enough");
+        }
+    }
+
+    public ArrayList<Integer> getBagPebbles() {
+        return bagPebbles;
+    }
+
+    //todo make synchronized
+    synchronized int pickPebble() {
+        int numberPebbles = this.bagPebbles.size();
+
+        if (numberPebbles > 0) {
+            Random rand = new Random();
+            int n = rand.nextInt(numberPebbles);
+
+            return this.bagPebbles.remove(n);
+        } else {
+            return -1000;
+        }
+    }
+
+    synchronized static void swapBags(Bag blackBag, Bag whiteBag) {
+        if (blackBag.bagPebbles.size() == 0) {
+            blackBag.bagPebbles.addAll(whiteBag.bagPebbles);
+            whiteBag.bagPebbles.clear();
         }
     }
 }

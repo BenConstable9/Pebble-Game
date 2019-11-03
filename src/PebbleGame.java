@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Scanner;
 
 public class PebbleGame {
@@ -19,12 +20,12 @@ public class PebbleGame {
 
         //generate the players
         for (int j = 0; j < numberOfPlayers; j ++) {
-            System.out.println("making player");
-            Runnable runnable = new Player();
+            Runnable runnable = new Player(j);
 
             Thread thread = new Thread(runnable);
             thread.start();
-            //todo name the threads
+            thread.setName("Player " + j);
+            System.out.println(thread.getName());
             //todo build intiial picks
         }
     }
@@ -58,7 +59,7 @@ public class PebbleGame {
                 }
             }
 
-            if (allFiles == true) {
+            if (allFiles) {
                 //pass to constructor
                 System.out.println("Generating");
 
@@ -77,14 +78,52 @@ public class PebbleGame {
 
     class Player implements Runnable {
         private ArrayList<Integer> playerHand = new ArrayList<>();
+        private int playerNumber;
+
+        public Player (int playerNumber) {
+            this.playerNumber = playerNumber;
+        }
 
         public ArrayList<Integer> getPlayerHand() {
             return playerHand;
         }
 
+        public int getPlayerNumber() {
+            return playerNumber;
+        }
+
+        //chooses the bag - not atomic
+        private void pickBagAndPebble() {
+            boolean picked = false;
+            while (!picked) {
+                Random rand = new Random();
+
+                int n = rand.nextInt(3);
+
+                Bag choosenBag = blackBags[n];
+                //todo finish
+                int newPebble = choosenBag.pickPebble();
+
+                if (newPebble == -1000) {
+                    //repick
+                    picked = false;
+                } else {
+                    this.playerHand.add(newPebble);
+                    picked = true;
+
+                    //See if the bags need to be swapped
+                    Bag.swapBags(blackBags[n], whiteBags[n]);
+                }
+            }
+        }
+
         @Override
         public void run() {
-            Player player = new Player();
+            System.out.println("Test");
+            for (int i = 0; i < 10; i ++) {
+                this.pickBagAndPebble();
+            }
+            System.out.println(this.playerHand);
         }
     }
 }

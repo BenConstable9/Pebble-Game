@@ -13,7 +13,7 @@
   </component>
   <component name="ProjectId" id="1Se7wlbMbW5h8sN1HXJWkwRIkBR" />
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/OneDrive - University of Exeter/Uni/Udemy Java Programming Masterclass/JavaPrograms/ReadingUserInput" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -39,5 +39,18 @@
       <updated>1571912447605</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

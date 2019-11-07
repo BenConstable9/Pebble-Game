@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class Bag {
@@ -15,9 +14,10 @@ public class Bag {
         this.numberOfPlayers = numberOfPlayers;
     }
 
-    public Bag(String name, String bagLocation, int numberOfPlayers) {
+    public Bag(String name, String bagLocation, int numberOfPlayers) throws IllegalArgumentException {
         this.name = name;
         this.numberOfPlayers = numberOfPlayers;
+        boolean validBag = true;
 
         //use this
         String[] bagPebblesString = {};
@@ -25,29 +25,39 @@ public class Bag {
             BufferedReader reader = new BufferedReader(new FileReader(bagLocation));
             bagPebblesString = reader.readLine().split(",");
         } catch (IOException e) {
-            //todo handle this better
-            e.printStackTrace();
+            System.out.println("Some of the files cannot be found..");
+            validBag = false;
         }
 
-        if (bagPebblesString.length >= (1 * numberOfPlayers)) {
-            //iterate through
-            for (String bagPebbleString : bagPebblesString) {
-                try {
-                    int bagPebbleInt = Integer.parseInt(bagPebbleString);
-                    //handle minus
-                    if (bagPebbleInt < 0){
-                        System.out.println("The following minus number " + bagPebbleInt + " is in bag: " + name + ".");
-                    }
-                    this.bagPebbles.add(bagPebbleInt);
+        //only proceed if bag is found
+        if (validBag) {
+            if (bagPebblesString.length >= (11 * numberOfPlayers)) {
+                //iterate through
+                for (String bagPebbleString : bagPebblesString) {
+                    try {
+                        int bagPebbleInt = Integer.parseInt(bagPebbleString);
+                        //handle minus
+                        if (bagPebbleInt < 0) {
+                            System.out.println("Negative numbers exist in bag: " + name + ".");
+                            validBag = false;
+                            break;
+                        }
+                        this.bagPebbles.add(bagPebbleInt);
 
-                } catch (NumberFormatException e) {
-                    //todo handle nicely
-                    e.printStackTrace();
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid number formats exist in bag: " + name + ".");
+                        validBag = false;
+                        break;
+                    }
                 }
+            } else {
+                validBag = false;
+                System.out.println("The quantity of numbers is not big enough in bag: " + name + ".");
             }
-        } else {
-            //todo work out this
-            System.out.println("Bag not big enough");
+        }
+
+        if (!validBag) {
+            throw new IllegalArgumentException();
         }
     }
 

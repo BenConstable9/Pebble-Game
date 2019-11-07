@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -10,18 +11,6 @@ public class PebbleGame {
 
     private boolean gameWon = false;
     private int winner;
-
-    public boolean isGameWon() {
-        return gameWon;
-    }
-
-    public void setGameWon(boolean gameWon) {
-        this.gameWon = gameWon;
-    }
-
-    public void setWinner(int winner) {
-        this.winner = winner;
-    }
 
     private synchronized boolean hasWon(ArrayList<Integer> playerHand, int playerNumber){
         if (this.gameWon) {
@@ -42,12 +31,13 @@ public class PebbleGame {
         }
     }
 
-    public PebbleGame(int numberOfPlayers, String[] bagLocations) {
+    public PebbleGame(int numberOfPlayers, String[] bagLocations) throws IllegalArgumentException {
         //generate number of players in different threads
         this.numberOfPlayers = numberOfPlayers;
 
         //load the bag files
         for (int i = 0; i < 3; i ++) {
+            //if there is an exception, this will be thrown back upwards
             blackBags[i] = new Bag("Black " + i ,bagLocations[i], numberOfPlayers);
             whiteBags[i] = new Bag("White " + i , numberOfPlayers);
         }
@@ -62,56 +52,72 @@ public class PebbleGame {
         }
     }
 
-    //todo EXCEPTION HANDLING UNTIL INPUTS ARE LEGAL
     public static void main(String args []) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Running");
 
-        System.out.println("Please enter the number of players:");
-        boolean hasNextInt = scanner.hasNextInt();
+        boolean success = false;
 
-        if (hasNextInt) {
-            int numberOfPlayers = scanner.nextInt();
-            scanner.nextLine();
+        while (!success) {
+            System.out.println("Please enter the number of players:");
+            String numberOfPlayersString = scanner.nextLine();
 
-            boolean allFiles = true;
-            //set up our array
-            String[] bagLocations = new String[3];
-            for (int i = 0; i  < 3; i ++) {
-                System.out.println("Please enter a location of bag number " + i + " to load: ");
-                //check it is a csv / txt
-                String bagLocation = scanner.nextLine();
-
-                //todo must be a file
-                if (bagLocation.length() > 0) {
-                    bagLocations[i] = bagLocation;
-                } else {
-                    allFiles = false;
-                    break;
+            int numberOfPlayers = 0;
+            if (numberOfPlayersString.equals("E")) {
+                break;
+            } else {
+                try {
+                    numberOfPlayers = Integer.parseInt(numberOfPlayersString);
+                } catch (NumberFormatException e) {
+                    System.out.println("Unable to detect number of players");
                 }
             }
 
-            if (allFiles) {
-                //pass to constructor
-                System.out.println("Generating");
+            if (numberOfPlayers > 0) {
+                boolean allFiles = true;
+                //set up our array
+                String[] bagLocations = new String[3];
+                for (int i = 0; i < 3; i++) {
+                    System.out.println("Please enter a location of bag number " + i + " to load: ");
+                    //check it is a csv / txt
+                    String bagLocation = scanner.nextLine();
 
-                PebbleGame game = new PebbleGame(numberOfPlayers, bagLocations);
-            } else {
-                System.out.println("Unable to detect all of the files.");
+                    if (bagLocation.length() > 0) {
+                        if (bagLocation.equals("E")) {
+                            allFiles = false;
+                            success = true;
+                            break;
+                        } else {
+                            bagLocations[i] = bagLocation;
+                        }
+                    } else {
+                        allFiles = false;
+                        break;
+                    }
+                }
+
+                if (allFiles) {
+                    //pass to constructor
+                    try {
+                        PebbleGame game = new PebbleGame(numberOfPlayers, bagLocations);
+                        success = true;
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Unable to initiate all of the bags.");
+                    }
+                } else {
+                    System.out.println("Unable to detect all of the files.");
+                }
             }
-        } else {
-            System.out.println("Unable to detect number of players");
         }
-
         //close my scanner
         scanner.close();
-
     }
 
     class Player implements Runnable {
         private ArrayList<Integer> playerHand = new ArrayList<>();
         private int playerNumber;
         private int previousBag;
+        private ArrayList<String> playerLog = new ArrayList<>();
 
         public Player (int playerNumber) {
             this.playerNumber = playerNumber;
@@ -178,8 +184,8 @@ public class PebbleGame {
                 this.pickBagAndPebble();
             }
 
-
-
+            //save everything to a file
+            System.out.println(this.playerLog);
         }
     }
 }

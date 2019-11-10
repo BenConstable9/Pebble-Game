@@ -11,6 +11,7 @@ import java.util.Scanner;
 public class PebbleGame {
     private Bag[] blackBags = new Bag[3];
     private Bag[] whiteBags = new Bag[3];
+    private int numberOfPlayers;
 
     private boolean gameWon = false;
 
@@ -32,8 +33,9 @@ public class PebbleGame {
         }
     }
 
-    private PebbleGame(int numberOfPlayers, String[] bagLocations) throws IllegalArgumentException {
+    public PebbleGame(int numberOfPlayers, String[] bagLocations) throws IllegalArgumentException {
         //generate number of players in different threads
+        this.numberOfPlayers = numberOfPlayers;
 
         //load the bag files
         for (int i = 0; i < 3; i ++) {
@@ -41,9 +43,11 @@ public class PebbleGame {
             blackBags[i] = new Bag("Black " + i ,bagLocations[i], numberOfPlayers);
             whiteBags[i] = new Bag("White " + i);
         }
+    }
 
+    public void startGame() {
         //generate the players
-        for (int j = 0; j < numberOfPlayers; j ++) {
+        for (int j = 0; j < this.numberOfPlayers; j ++) {
             Runnable runnable = new Player(j);
 
             Thread thread = new Thread(runnable);
@@ -51,6 +55,7 @@ public class PebbleGame {
             thread.start();
         }
     }
+
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -100,6 +105,7 @@ public class PebbleGame {
                     //pass to constructor
                     try {
                         PebbleGame game = new PebbleGame(numberOfPlayers, bagLocations);
+                        game.startGame();
                         success = true;
                     } catch (IllegalArgumentException e) {
                         System.out.println("Unable to initiate all of the bags.");
@@ -145,7 +151,7 @@ public class PebbleGame {
                     //See if the bags need to be swapped
                     Bag.swapBags(blackBags[n], whiteBags[n]);
                     //System.out.println("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
-                    this.playerLog.add("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            this.playerLog.add("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
 
                 }
             }

@@ -2,11 +2,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class Bag {
     private String name;
-    public ArrayList<Integer> bagPebbles = new ArrayList<>();
+    public List<Integer> bagPebbles = Collections.synchronizedList(new ArrayList<Integer>());
     private int numberOfPlayers;
 
     public Bag(String name, int numberOfPlayers) {
@@ -67,6 +69,8 @@ public class Bag {
         if (numberPebbles > 0) {
             Random rand = new Random();
             int n = rand.nextInt(numberPebbles);
+            //System.out.println(n);
+            //System.out.println(numberPebbles);
 
             return this.bagPebbles.remove(n);
         } else {

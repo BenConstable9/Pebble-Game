@@ -1,27 +1,25 @@
-import java.lang.reflect.Array;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
 public class PebbleGame {
-    private int numberOfPlayers;
     private Bag[] blackBags = new Bag[3];
     private Bag[] whiteBags = new Bag[3];
 
     private boolean gameWon = false;
-    private int winner;
 
     private synchronized boolean hasWon(ArrayList<Integer> playerHand, int playerNumber){
         if (this.gameWon) {
             return this.gameWon;
         } else {
             int playerHandValue = 0;
-            for (int i = 0; i < playerHand.size(); i++){
-                playerHandValue += playerHand.get(i);
+            for (Integer integer : playerHand) {
+                playerHandValue += integer;
             }
             if (playerHandValue == 100){
-                this.winner = playerNumber;
                 this.gameWon = true;
                 System.out.println("Player: " + playerNumber + " has won with " + playerHand);
                 return true;
@@ -31,9 +29,8 @@ public class PebbleGame {
         }
     }
 
-    public PebbleGame(int numberOfPlayers, String[] bagLocations) throws IllegalArgumentException {
+    private PebbleGame(int numberOfPlayers, String[] bagLocations) throws IllegalArgumentException {
         //generate number of players in different threads
-        this.numberOfPlayers = numberOfPlayers;
 
         //load the bag files
         for (int i = 0; i < 3; i ++) {
@@ -52,7 +49,7 @@ public class PebbleGame {
         }
     }
 
-    public static void main(String args []) {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Running");
 
@@ -119,16 +116,8 @@ public class PebbleGame {
         private int previousBag;
         private ArrayList<String> playerLog = new ArrayList<>();
 
-        public Player (int playerNumber) {
+        Player(int playerNumber) {
             this.playerNumber = playerNumber;
-        }
-
-        public ArrayList<Integer> getPlayerHand() {
-            return playerHand;
-        }
-
-        public int getPlayerNumber() {
-            return playerNumber;
         }
 
         //chooses the bag - not atomic
@@ -152,13 +141,14 @@ public class PebbleGame {
 
                     //See if the bags need to be swapped
                     Bag.swapBags(blackBags[n], whiteBags[n]);
-                    System.out.println("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
+                    //System.out.println("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
+                    this.playerLog.add("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
 
                 }
             }
         }
 
-        public void discardPebble(){
+        private void discardPebble(){
             Random rand = new Random();
             int i = rand.nextInt(9);
 
@@ -166,14 +156,25 @@ public class PebbleGame {
             int removedPebble = this.playerHand.remove(i);
             choosenBag.bagPebbles.add(removedPebble);
 
-            System.out.println("Player " + playerNumber + " has discarded " + removedPebble + " from bag " + i + "\nPlayer " + playerNumber + " hand is " + playerHand);
+            //System.out.println("Player " + playerNumber + " has discarded " + removedPebble + " from bag " + i + "\nPlayer " + playerNumber + " hand is " + playerHand);
+            this.playerLog.add("Player " + playerNumber + " has discarded " + removedPebble + " from bag " + i + "\nPlayer " + playerNumber + " hand is " + playerHand);
+        }
 
+        private void saveLog() {
+            String filename = "player" + this.playerNumber + "_output.txt";
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+                String output = String.join("\n", this.playerLog);
+                writer.write(output);
+                writer.close();
+            } catch (IOException e) {
+                System.out.println("Unable to write to file");
+            }
         }
 
 
         @Override
         public void run() {
-            System.out.println("Test");
             for (int i = 0; i < 10; i ++) {
                 this.pickBagAndPebble();
             }
@@ -185,7 +186,8 @@ public class PebbleGame {
             }
 
             //save everything to a file
-            System.out.println(this.playerLog);
+            //System.out.println(this.playerLog);
+            this.saveLog();
         }
     }
 }

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+//todo change bag numbers ot letters
+//todo add additional features
+
 public class PebbleGame {
     private Bag[] blackBags = new Bag[3];
     private Bag[] whiteBags = new Bag[3];
@@ -36,7 +39,7 @@ public class PebbleGame {
         for (int i = 0; i < 3; i ++) {
             //if there is an exception, this will be thrown back upwards
             blackBags[i] = new Bag("Black " + i ,bagLocations[i], numberOfPlayers);
-            whiteBags[i] = new Bag("White " + i , numberOfPlayers);
+            whiteBags[i] = new Bag("White " + i);
         }
 
         //generate the players

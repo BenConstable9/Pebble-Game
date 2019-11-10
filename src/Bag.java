@@ -9,16 +9,13 @@ import java.util.Random;
 public class Bag {
     private String name;
     public List<Integer> bagPebbles = Collections.synchronizedList(new ArrayList<Integer>());
-    private int numberOfPlayers;
 
-    public Bag(String name, int numberOfPlayers) {
+    public Bag(String name) {
         this.name = name;
-        this.numberOfPlayers = numberOfPlayers;
     }
 
     public Bag(String name, String bagLocation, int numberOfPlayers) throws IllegalArgumentException {
         this.name = name;
-        this.numberOfPlayers = numberOfPlayers;
         boolean validBag = true;
 
         //use this
@@ -69,8 +66,6 @@ public class Bag {
         if (numberPebbles > 0) {
             Random rand = new Random();
             int n = rand.nextInt(numberPebbles);
-            //System.out.println(n);
-            //System.out.println(numberPebbles);
 
             return this.bagPebbles.remove(n);
         } else {

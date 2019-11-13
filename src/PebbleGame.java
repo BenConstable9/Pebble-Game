@@ -33,6 +33,10 @@ public class PebbleGame {
         }
     }
 
+    public Runnable returnPlayer(int playerNumber) {
+        return new Player(playerNumber);
+    }
+
     public PebbleGame(int numberOfPlayers, String[] bagLocations) throws IllegalArgumentException {
         //generate number of players in different threads
         this.numberOfPlayers = numberOfPlayers;

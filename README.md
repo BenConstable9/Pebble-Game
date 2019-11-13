@@ -3,11 +3,11 @@
  
  Pebble Game Implemented in Java. The game can be run using the PebbleGame.java class with the corresponding main function.
  
-##Testing
+## Testing
 
 A single test suite is provided for testing; testing is implemented with **JUnit 4.x**. The suite contains tests for the PebbleGame.java file and the Bag.java file. Each of the files has a separate testing file which the Test Suite runs.
 
-####Running the Tests
+###### Running the Tests
 Tests can be run using a standard Java IDE such as **IntelliJ IDEA** and running the test TestSuite.
 You can run the tests from the command line using:
 

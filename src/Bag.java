@@ -6,14 +6,37 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * The Bag Class
+ *
+ * @version 1.0
+ * @since 2019-24-10
+ */
+
+
 public class Bag {
     private String name;
     public List<Integer> bagPebbles = Collections.synchronizedList(new ArrayList<Integer>());
 
+    /**
+     * Constructor for Bag class
+     * @param name -
+     */
     public Bag(String name) {
         this.name = name;
     }
 
+    /**
+     * Overloaded constructor for Bag class
+     * It gains the inputs from when the Bag class is called in the PebbleGame.java
+     * The method performs checks on the given bagLocations to ensure there are enough pebbles based on num of players
+     * Ensures all files can be found and reads their contents to add to the Bag
+     *
+     * @param name - //todo Name of the bag
+     * @param bagLocation - The location of the bag to be read
+     * @param numberOfPlayers - The number of players
+     * @throws IllegalArgumentException
+     */
     public Bag(String name, String bagLocation, int numberOfPlayers) throws IllegalArgumentException {
         this.name = name;
         boolean validBag = true;
@@ -60,6 +83,11 @@ public class Bag {
         }
     }
 
+    /**
+     * Synchronised method called from the PebbleGame.java file, which picks a random pebble from the correct bag
+     * @return - the bag with the element removes, or -1000 if you cannot remove from this bag in which case
+     *              the associated white bag must be emptied into that black bag
+     */
     synchronized int pickPebble() {
         int numberPebbles = this.bagPebbles.size();
 
@@ -73,6 +101,11 @@ public class Bag {
         }
     }
 
+    /**
+     * Swaps the contents of a white bag with its associated black bag, when the black bag is empty
+     * @param blackBag - empty blackBag
+     * @param whiteBag - the blackBag's associated non-empty whiteBag
+     */
     synchronized static void swapBags(Bag blackBag, Bag whiteBag) {
         if (blackBag.bagPebbles.size() == 0) {
             blackBag.bagPebbles.addAll(whiteBag.bagPebbles);

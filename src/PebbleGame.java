@@ -193,7 +193,7 @@ public class PebbleGame {
          * If there is a valid pick, then it sets the previous
          * Adds the pick details onto the player's log - to output to their text-file at the end
          */
-        //chooses the bag - not atomic //todo Get rid of this?
+        //chooses the bag - not atomic //todo Get rid of this??
         private void pickBagAndPebble() {
             boolean picked = false;
             while (!picked) {

@@ -15,7 +15,9 @@ import java.util.Random;
 
 
 public class Bag {
-    private String name;
+    private String name; //todo - deal with this name ting
+
+    //Synchronized list ensures any method accessing the list will never conflict
     public List<Integer> bagPebbles = Collections.synchronizedList(new ArrayList<Integer>());
 
     /**
@@ -41,30 +43,28 @@ public class Bag {
         this.name = name;
         boolean validBag = true;
 
-        //use this
         String[] bagPebblesString = {};
         try {
             BufferedReader reader = new BufferedReader(new FileReader(bagLocation));
-            bagPebblesString = reader.readLine().split(",");
+            bagPebblesString = reader.readLine().split(","); //Splits whenever there is a comma
         } catch (IOException e) {
             System.out.println("Some of the files cannot be found..");
             validBag = false;
         }
 
-        //only proceed if bag is found
+        //Only proceed if bags are valid and thus found
         if (validBag) {
-            if (bagPebblesString.length >= (11 * numberOfPlayers)) {
-                //iterate through
+            if (bagPebblesString.length >= (11 * numberOfPlayers)) { //Complies with rule that pebbles > 11*numOfPlayers
+                //Iterates through each pebble in the bag
                 for (String bagPebbleString : bagPebblesString) {
                     try {
-                        int bagPebbleInt = Integer.parseInt(bagPebbleString);
-                        //handle minus
-                        if (bagPebbleInt < 0) {
+                        int bagPebbleInt = Integer.parseInt(bagPebbleString); //Converts the pebble into an Int from String
+                        if (bagPebbleInt < 0) { //If pebble is a negative (not allowed)
                             System.out.println("Negative numbers exist in bag: " + name + ".");
-                            validBag = false;
-                            break;
+                            validBag = false; //Thus not a valid bag
+                            break; //Goes back to check if validBag is true, which it is not
                         }
-                        this.bagPebbles.add(bagPebbleInt);
+                        this.bagPebbles.add(bagPebbleInt); //Adds the pebble into the bag as it is a valid pebble
 
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid number formats exist in bag: " + name + ".");
@@ -72,9 +72,10 @@ public class Bag {
                         break;
                     }
                 }
-            } else {
+            } else { //Else (there are less pebbles than 11*numOfPlayers)
                 validBag = false;
                 System.out.println("The quantity of numbers is not big enough in bag: " + name + ".");
+                //todo ^^ when there are multiple bags which do not have enough items in it
             }
         }
 
@@ -88,15 +89,15 @@ public class Bag {
      * @return - the bag with the element removes, or -1000 if you cannot remove from this bag in which case
      *              the associated white bag must be emptied into that black bag
      */
-    synchronized int pickPebble() {
+    synchronized int pickPebble() { //Synchronized to ensure no conflicts
         int numberPebbles = this.bagPebbles.size();
 
-        if (numberPebbles > 0) {
+        if (numberPebbles > 0) { //If there are pebbles in the black bag to be picked
             Random rand = new Random();
             int n = rand.nextInt(numberPebbles);
 
             return this.bagPebbles.remove(n);
-        } else {
+        } else { //There are no pebbles to be picked in the black bag and so must have it's associated white bag emptied into it
             return -1000;
         }
     }
@@ -107,9 +108,9 @@ public class Bag {
      * @param whiteBag - the blackBag's associated non-empty whiteBag
      */
     synchronized static void swapBags(Bag blackBag, Bag whiteBag) {
-        if (blackBag.bagPebbles.size() == 0) {
-            blackBag.bagPebbles.addAll(whiteBag.bagPebbles);
-            whiteBag.bagPebbles.clear();
+        if (blackBag.bagPebbles.size() == 0) { //If the blackBag is empty
+            blackBag.bagPebbles.addAll(whiteBag.bagPebbles); //Add all contents from the whiteBag into the blackBag
+            whiteBag.bagPebbles.clear(); //Clear contents of the whiteBag (as its pebbles have moved to the blackBag)
         }
     }
 }

@@ -14,7 +14,7 @@ public class BagTest {
      * Test the bag constructors with an empty bag.
      */
     @Test
-    public void testBagConstructor() {
+    public void testBagConstructorEmptyBag() {
         //create an empty bag
         Bag testEmptyBag = new Bag("Empty");
 
@@ -26,7 +26,7 @@ public class BagTest {
      * Test the bag constructors with a bag of size 50.
      */
     @Test
-    public void testBagConstructorDuplicates() {
+    public void testBagConstructorFullBag() {
         //create the bag from the file
         Bag testFullBag = new Bag("Full", "testBagConstructorDuplicatesBag.txt", 4);
 
@@ -39,7 +39,7 @@ public class BagTest {
      * Should produce an IllegalArgumentException.
      */
     @Test (expected = IllegalArgumentException.class)
-    public void testBagConstructorDuplicates2() {
+    public void testBagConstructorInvalidFile() {
         //try and create the bag
         Bag testFullBag = new Bag("Full", "randomBag.txt", 4);
     }
@@ -49,7 +49,7 @@ public class BagTest {
      * Should produce an IllegalArgumentException.
      */
     @Test (expected = IllegalArgumentException.class)
-    public void testBagConstructorDuplicates3() {
+    public void testBagConstructorNegativeNumbers() {
         //try and create the bag
         Bag testFullBag = new Bag("Full", "negativeNumbersBag.txt", 4);
     }
@@ -59,7 +59,7 @@ public class BagTest {
      * Should produce an IllegalArgumentException.
      */
     @Test (expected = IllegalArgumentException.class)
-    public void testBagConstructorDuplicates4() {
+    public void testBagConstructorLetters() {
         //try and create the bag
         Bag testFullBag = new Bag("Full", "invalidNumbersBag.txt", 4);
     }
@@ -69,7 +69,7 @@ public class BagTest {
      * Should produce an IllegalArgumentException.
      */
     @Test (expected = IllegalArgumentException.class)
-    public void testBagConstructorDuplicates5() {
+    public void testBagConstructorInvalidLength() {
         //try and create the bag
         Bag testFullBag = new Bag("Full", "testBagConstructorDuplicatesBag.txt", 10);
     }
@@ -79,7 +79,7 @@ public class BagTest {
      * Test by using a bag only full of 1s.
      */
     @Test
-    public void testPickPebble() {
+    public void testPickPebbleFullBag() {
         //create the bag full of 1s
         Bag testFullBag = new Bag("Full", "testPickPebbleBag.txt", 1);
 
@@ -92,7 +92,7 @@ public class BagTest {
      * Test by using an empty bag to see if it returns the expected error of -1000.
      */
     @Test
-    public void testPickPebbleDuplicates() {
+    public void testPickPebbleEmptyBag() {
         //create the empty bag.
         Bag testEmptyBag = new Bag("Empty");
 

@@ -97,10 +97,20 @@ public class PebbleGameTest {
 
     /**
      * Test the constructor for the game.
+     */
+    @Test
+    public void testPebbleGameConstructor() {
+        //create the string of files with a false file
+        String[] bagLocations = new String[]{"testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt"};
+        new PebbleGame(4, bagLocations);
+    }
+
+    /**
+     * Test the constructor for the game.
      * It should produce an exception as one of the files does not exist.
      */
     @Test (expected = IllegalArgumentException.class)
-    public void testPebbleGameConstructor() {
+    public void testPebbleGameConstructorInvalidFile() {
         //create the string of files with a false file
         String[] bagLocations = new String[]{"testPebbleGameConstructor.txt", "randomFile.txt", "testPebbleGameConstructor.txt"};
         new PebbleGame(4, bagLocations);
@@ -111,7 +121,7 @@ public class PebbleGameTest {
      * Should produce exception as this is not allowed.
      */
     @Test (expected = IllegalArgumentException.class)
-    public void testPebbleGameConstructorDuplicates() {
+    public void testPebbleGameConstructorNegativePlayers() {
         //Pass the files into the constructor
         String[] bagLocations = new String[]{"testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt"};
         new PebbleGame(-1, bagLocations);
@@ -122,7 +132,7 @@ public class PebbleGameTest {
      * The player should not have one with this result.
      */
     @Test
-    public void testHasWon() {
+    public void testHasWonInvalidHand() {
         //create an hand to use for the test which does not add up to 100
         ArrayList<Integer> hand = new ArrayList<>();
         hand.addAll(Arrays.asList(1,4,5,7,3,30,5,2,9,10));
@@ -138,7 +148,7 @@ public class PebbleGameTest {
      * The player should win with this hand.
      */
     @Test
-    public void testHasWonDuplicates() {
+    public void testHasWonWinningHand() {
         //create a hand for them
         ArrayList<Integer> hand = new ArrayList<>();
         hand.addAll(Arrays.asList(12,16,24,5,1,26,6,5,1,4));
@@ -154,7 +164,7 @@ public class PebbleGameTest {
      * The player should not win with this hand even though it adds to 100 as someone else has won first.
      */
     @Test
-    public void testHasWonDuplicates2() {
+    public void testHasWonOtherWinner() {
         //create winning hand
         ArrayList<Integer> hand = new ArrayList<>();
         hand.addAll(Arrays.asList(12,16,24,5,1,26,6,5,1,4));
@@ -242,7 +252,7 @@ public class PebbleGameTest {
      * Use the input redirection to test this.
      */
     @Test
-    public void testMain() {
+    public void testMainInvalidPlayers() {
         //set the new input for the keyboard
         final String testString = "HJJH\nE";
 
@@ -261,7 +271,7 @@ public class PebbleGameTest {
      * Use redirection to test this.
      */
     @Test
-    public void testMainDuplicates() {
+    public void testMainInvalidFile() {
         //set up our new input with an invalid file
         final String testString = "20\ntextfile.txt\ntextfile.txt\nrandomTextFile.txt\nE";
 

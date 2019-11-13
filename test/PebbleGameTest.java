@@ -41,7 +41,8 @@ public class PebbleGameTest {
     public void setUp() throws Exception {
         //Create a new game and store it
         String[] bagLocations = new String[]{"testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt"};
-        this.game = new PebbleGame(4, bagLocations);
+        String[] playerNames = new String[]{"Dave", "Bob", "Steve", "Kate"};
+        this.game = new PebbleGame(4, playerNames, bagLocations);
 
         //Save the output elsewhere
         testOut = new ByteArrayOutputStream();
@@ -102,7 +103,8 @@ public class PebbleGameTest {
     public void testPebbleGameConstructor() {
         //create the string of files with a false file
         String[] bagLocations = new String[]{"testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt"};
-        new PebbleGame(4, bagLocations);
+        String[] playerNames = new String[]{"Dave", "Bob", "Steve", "Kate"};
+        new PebbleGame(4, playerNames, bagLocations);
     }
 
     /**
@@ -113,7 +115,8 @@ public class PebbleGameTest {
     public void testPebbleGameConstructorInvalidFile() {
         //create the string of files with a false file
         String[] bagLocations = new String[]{"testPebbleGameConstructor.txt", "randomFile.txt", "testPebbleGameConstructor.txt"};
-        new PebbleGame(4, bagLocations);
+        String[] playerNames = new String[]{"Dave", "Bob", "Steve", "Kate"};
+        new PebbleGame(4, playerNames, bagLocations);
     }
 
     /**
@@ -124,7 +127,8 @@ public class PebbleGameTest {
     public void testPebbleGameConstructorNegativePlayers() {
         //Pass the files into the constructor
         String[] bagLocations = new String[]{"testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt"};
-        new PebbleGame(-1, bagLocations);
+        String[] playerNames = new String[]{"Dave", "Bob", "Steve", "Kate"};
+        new PebbleGame(-1, playerNames, bagLocations);
     }
 
     /**
@@ -138,7 +142,7 @@ public class PebbleGameTest {
         hand.addAll(Arrays.asList(1,4,5,7,3,30,5,2,9,10));
 
         //find the result and assert it
-        boolean result = this.game.hasWon(hand, 0);
+        boolean result = this.game.hasWon(hand, "Player 0");
 
         assertFalse(result);
     }
@@ -154,7 +158,7 @@ public class PebbleGameTest {
         hand.addAll(Arrays.asList(12,16,24,5,1,26,6,5,1,4));
 
         //get the result of the game and assert
-        boolean result = this.game.hasWon(hand, 0);
+        boolean result = this.game.hasWon(hand, "Player 0");
 
         assertTrue(result);
     }
@@ -173,7 +177,7 @@ public class PebbleGameTest {
         this.game.gameWon = true;
 
         //get the result
-        boolean result = this.game.hasWon(hand, 0);
+        boolean result = this.game.hasWon(hand, "Player 0");
 
         assertTrue(result);
     }
@@ -185,7 +189,7 @@ public class PebbleGameTest {
     @Test
     public void testSaveLog() {
         //get the instance of a player
-        Runnable runnable = this.game.returnPlayer(1);
+        Runnable runnable = this.game.returnPlayer("Dave", 1);
 
         //handle the exceptions
         try {
@@ -208,7 +212,7 @@ public class PebbleGameTest {
     @Test
     public void testPickBagAndPebble() {
         //get an instance of a player
-        Runnable runnable = this.game.returnPlayer(1);
+        Runnable runnable = this.game.returnPlayer("Dave", 1);
 
         try {
             //get the method pickBagAndPebble
@@ -240,7 +244,7 @@ public class PebbleGameTest {
     @Test
     public void testPlayerConstructor() {
         //get an instance of the player and see if the threads starts
-        Runnable runnable = this.game.returnPlayer(0);
+        Runnable runnable = this.game.returnPlayer("Dave", 0);
 
         Thread thread = new Thread(runnable);
         thread.setName("Player " + 0);

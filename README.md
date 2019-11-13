@@ -17,7 +17,7 @@ This will only work if JUnit is in the path of your environment and you have nav
 
 All of the tests should pass. Some of the tests may output data as the methods they call do. 
 
-The TestSuite class has **100% method coverage** and **91% line coverage** from the combined files: 
+The TestSuite class has **100% method coverage** and **89% line coverage** from the combined files: 
 
 The BagTest class has **100% method coverage** and **100% line coverage**.
-The PebbleGameTest class has **100% method coverage** and **88% line coverage**.
+The PebbleGameTest class has **100% method coverage** and **85% line coverage**.

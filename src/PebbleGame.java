@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-//todo change bag numbers to letters
 //todo add additional features
 
 /**
@@ -25,6 +24,7 @@ public class PebbleGame {
 
     //Used in synchronized to determine whether or not the game has been won
     protected boolean gameWon = false;
+    private String[] playerNames;
 
     /**
      * Constructor for the PebbleGame Class
@@ -34,19 +34,22 @@ public class PebbleGame {
      * @param bagLocations - a string array of bagLocations
      * @throws IllegalArgumentException
      */
-    public PebbleGame(int numberOfPlayers, String[] bagLocations) throws IllegalArgumentException {
+    public PebbleGame(int numberOfPlayers, String[] playerNames, String[] bagLocations) throws IllegalArgumentException {
         //Handle the players being less than 1
         if (numberOfPlayers < 1) {
             throw new IllegalArgumentException();
         } else {
             //Generate number of players in different threads
             this.numberOfPlayers = numberOfPlayers;
+            this.playerNames = playerNames;
+
+            String[][] names = {{"A", "X"}, {"B", "Y"}, {"C", "Z"}};
 
             //Load the bag files
             for (int i = 0; i < 3; i++) {
                 //If there is an exception, this will be thrown back upwards
-                blackBags[i] = new Bag("Black " + i, bagLocations[i], numberOfPlayers);
-                whiteBags[i] = new Bag("White " + i);
+                blackBags[i] = new Bag(names[i][1], bagLocations[i], numberOfPlayers);
+                whiteBags[i] = new Bag(names[i][0]);
             }
         }
     }
@@ -56,10 +59,10 @@ public class PebbleGame {
      * It checks their hand which is stored in an array list
      *
      * @param playerHand -
-     * @param playerNumber
+     * @param playerName
      * @return true if player has won, otherwise false
      */
-    protected synchronized boolean hasWon(ArrayList<Integer> playerHand, int playerNumber){
+    protected synchronized boolean hasWon(ArrayList<Integer> playerHand, String playerName){
         if (this.gameWon) {
             return this.gameWon;
         } else {
@@ -71,7 +74,7 @@ public class PebbleGame {
 
             if (playerHandValue == 100){ //If the player's hand equals 100 (thus they have won)
                 this.gameWon = true;
-                System.out.println("Player: " + playerNumber + " has won with " + playerHand);
+                System.out.println(playerName + " has won with " + playerHand);
                 return true;
             } else { //Else, player has not won
                 return false;
@@ -86,8 +89,8 @@ public class PebbleGame {
      * @param playerNumber
      * @return the constructor of the Player class with parameter playerNumber which is a nested class
      */
-    public Runnable returnPlayer(int playerNumber) {
-        return new Player(playerNumber);
+    public Runnable returnPlayer(String playerName, int playerNumber) {
+        return new Player(playerName, playerNumber);
     }
 
     /**
@@ -97,10 +100,10 @@ public class PebbleGame {
     public void startGame() {
         //Generate the players and threads
         for (int j = 0; j < this.numberOfPlayers; j ++) {
-            Runnable runnable = new Player(j);
+            Runnable runnable = new Player("Player " + j + " (" + this.playerNames[j] + ")", j);
 
             Thread thread = new Thread(runnable);
-            thread.setName("Player " + j); //todo - we can name the threads here
+            thread.setName("Player " + j);
             thread.start();
         }
         System.out.println("Running the game...");
@@ -109,7 +112,7 @@ public class PebbleGame {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in); //Scanner object is created for later use
-        System.out.println("Running");
+        System.out.println("Welcome to the Pebble Game! \nYou will be asked to enter the number of players and then for the location of three files in turn containing comma separated integer values for the pebble weights.\nThe integer values must be strictly positive.\nThe game will then be simulated, and the output written to files in this directory.");
 
         boolean success = false; //Used in the while loop to make sure all inputs are correct before game progresses
 
@@ -134,7 +137,6 @@ public class PebbleGame {
                 String[] bagLocations = new String[3]; //String array of length 3 for the 3 bag locations
                 for (int i = 0; i < 3; i++) {
                     System.out.println("Please enter a location of bag number " + i + " to load: ");
-                    //check it is a csv / txt todo check what happens with like a .docx file
                     String bagLocation = scanner.nextLine(); //Takes in the next line
 
                     if (bagLocation.length() > 0) {
@@ -142,8 +144,11 @@ public class PebbleGame {
                             allFiles = false;
                             success = true;
                             break;
-                        } else {
+                        } else if (bagLocation.contains(".txt") || bagLocation.contains(".csv")) {//check it is a csv / txt
                             bagLocations[i] = bagLocation; //Places given bag location from scanner into array
+                        } else {
+                            allFiles = false;
+                            break;
                         }
                     } else {
                         allFiles = false;
@@ -152,16 +157,33 @@ public class PebbleGame {
                 }
 
                 if (allFiles) { //if allFiles is true
+                    String[] playerNames = new String[numberOfPlayers]; //String array of length of the number of players
+                    for (int i = 0; i < numberOfPlayers; i++) {
+                        System.out.println("Please enter a name for player " + i + ": ");
+                        String playerName = scanner.nextLine(); //Takes in the next line
+
+                        if (playerName.length() > 0) {
+                            if (playerName.equals("E")) { //User wants to exit
+                                success = true;
+                                break;
+                            } else {//check it is a csv / txt
+                                playerNames[i] = playerName; //Places given bag location from scanner into array
+                            }
+                        } else {
+                            System.out.println("Player incorrectly named.");
+                            break;
+                        }
+                    }
                     //Pass the files to the constructor
                     try {
-                        PebbleGame game = new PebbleGame(numberOfPlayers, bagLocations); //Creates a PebbleGame
+                        PebbleGame game = new PebbleGame(numberOfPlayers, playerNames, bagLocations); //Creates a PebbleGame
                         game.startGame(); //Starts the new game
                         success = true;
                     } catch (IllegalArgumentException e) {
                         System.out.println("Unable to initiate all of the bags.");
                     }
                 } else { //If there is an error in the files
-                    System.out.println("Unable to detect all of the files.");
+                    System.out.println("Unable to detect all of the files. Please check the file names.");
                 }
             }
         }
@@ -174,6 +196,7 @@ public class PebbleGame {
      */
     class Player implements Runnable {
         private ArrayList<Integer> playerHand = new ArrayList<>(); //ArrayList to hold the players' hand
+        private String playerName;
         private int playerNumber;
         private int previousBag; //Int to hold the bag the player last took from
         private ArrayList<String> playerLog = new ArrayList<>(); //ArrayList to hold the players' activity log
@@ -181,9 +204,10 @@ public class PebbleGame {
         /**
          * Constructor for the Player nested class
          *
-         * @param playerNumber
+         * @param playerName
          */
-        Player(int playerNumber) { //Generates a player when given a player number
+        Player(String playerName, int playerNumber) { //Generates a player when given a player number
+            this.playerName = playerName;
             this.playerNumber = playerNumber;
         }
 
@@ -193,7 +217,6 @@ public class PebbleGame {
          * If there is a valid pick, then it sets the previous
          * Adds the pick details onto the player's log - to output to their text-file at the end
          */
-        //chooses the bag - not atomic //todo Get rid of this??
         private void pickBagAndPebble() {
             boolean picked = false;
             while (!picked) {
@@ -215,10 +238,10 @@ public class PebbleGame {
                     //See if the bags need to be swapped
                     Bag.swapBags(blackBags[n], whiteBags[n]);
 
-                    System.out.println("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
+                    System.out.println(this.playerName + " has drawn " + newPebble + " from bag " + chosenBag.getName() + "\n" + this.playerName + " hand is " + playerHand);
 
                     //Adds to player's log the drawn action
-                    this.playerLog.add("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
+                    this.playerLog.add(this.playerName + " has drawn " + newPebble + " from bag " + chosenBag.getName() + "\n" + this.playerName + " hand is " + playerHand);
                 }
             }
         }
@@ -236,10 +259,10 @@ public class PebbleGame {
             int removedPebble = this.playerHand.remove(i); //Pebble removed from player's hand
             chosenBag.bagPebbles.add(removedPebble); //Pebble added to the white bag
 
-            //System.out.println("Player " + playerNumber + " has discarded " + removedPebble + " from bag " + i + "\nPlayer " + playerNumber + " hand is " + playerHand);
+            System.out.println(this.playerName + " has discarded " + removedPebble + " to bag " + chosenBag.getName() + "\n" + this.playerName + " hand is " + playerHand);
 
             //Adds to player's log the drawn action
-            this.playerLog.add("Player " + playerNumber + " has discarded " + removedPebble + " from bag " + i + "\nPlayer " + playerNumber + " hand is " + playerHand);
+            this.playerLog.add(this.playerName + " has discarded " + removedPebble + " to bag " + chosenBag.getName() + "\n" + this.playerName + " hand is " + playerHand);
         }
 
         /**
@@ -270,7 +293,7 @@ public class PebbleGame {
                 this.pickBagAndPebble(); //Builds the hand
             }
 
-            while (!hasWon(this.playerHand, this.playerNumber)){ //While no-one has won, discard a pebble and pick another
+            while (!hasWon(this.playerHand, this.playerName)){ //While no-one has won, discard a pebble and pick another
                 this.discardPebble();
                 this.pickBagAndPebble();
             }

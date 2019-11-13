@@ -15,14 +15,14 @@ import java.util.Random;
 
 
 public class Bag {
-    private String name; //todo - deal with this name ting
+    private String name;
 
     //Synchronized list ensures any method accessing the list will never conflict
     public List<Integer> bagPebbles = Collections.synchronizedList(new ArrayList<Integer>());
 
     /**
      * Constructor for Bag class
-     * @param name -
+     * @param name - The name of the bag e.g. Y
      */
     public Bag(String name) {
         this.name = name;
@@ -34,7 +34,7 @@ public class Bag {
      * The method performs checks on the given bagLocations to ensure there are enough pebbles based on num of players
      * Ensures all files can be found and reads their contents to add to the Bag
      *
-     * @param name - //todo Name of the bag
+     * @param name - The name of the bag e.g. Y
      * @param bagLocation - The location of the bag to be read
      * @param numberOfPlayers - The number of players
      * @throws IllegalArgumentException
@@ -48,7 +48,7 @@ public class Bag {
             BufferedReader reader = new BufferedReader(new FileReader(bagLocation));
             bagPebblesString = reader.readLine().split(","); //Splits whenever there is a comma
         } catch (IOException e) {
-            System.out.println("Some of the files cannot be found..");
+            System.out.println("Some of the files cannot be found.");
             validBag = false;
         }
 
@@ -60,28 +60,35 @@ public class Bag {
                     try {
                         int bagPebbleInt = Integer.parseInt(bagPebbleString); //Converts the pebble into an Int from String
                         if (bagPebbleInt < 0) { //If pebble is a negative (not allowed)
-                            System.out.println("Negative numbers exist in bag: " + name + ".");
+                            System.out.println("Negative numbers exist in at least bag: " + bagLocation + ".");
                             validBag = false; //Thus not a valid bag
                             break; //Goes back to check if validBag is true, which it is not
                         }
                         this.bagPebbles.add(bagPebbleInt); //Adds the pebble into the bag as it is a valid pebble
 
                     } catch (NumberFormatException e) {
-                        System.out.println("Invalid number formats exist in bag: " + name + ".");
+                        System.out.println("Invalid number formats exist in at least bag: " + bagLocation + ".");
                         validBag = false;
                         break;
                     }
                 }
             } else { //Else (there are less pebbles than 11*numOfPlayers)
                 validBag = false;
-                System.out.println("The quantity of numbers is not big enough in bag: " + name + ".");
-                //todo ^^ when there are multiple bags which do not have enough items in it
+                System.out.println("The quantity of numbers is not big enough in at least bag: " + bagLocation + ".");
             }
         }
 
         if (!validBag) {
             throw new IllegalArgumentException();
         }
+    }
+
+    /**
+     * Get the name of the bag.
+     * @return - return the private attribute name.
+     */
+    public String getName() {
+        return this.name;
     }
 
     /**

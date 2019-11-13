@@ -8,14 +8,54 @@ import java.util.Scanner;
 //todo change bag numbers ot letters
 //todo add additional features
 
+/**
+ * The PebbleGame Paired-Programming coursework.
+ *
+ * @version 1.0
+ * @since 2019-24-10
+ */
+
 public class PebbleGame {
     private Bag[] blackBags = new Bag[3];
     private Bag[] whiteBags = new Bag[3];
     private int numberOfPlayers;
 
-    private boolean gameWon = false;
+    protected boolean gameWon = false;
 
-    private synchronized boolean hasWon(ArrayList<Integer> playerHand, int playerNumber){
+    /**
+     * Constructor for the PebbleGame Class
+     * Creates the black and white bags and puts them in two different arrays
+     *
+     * @param numberOfPlayers - the number of players to play the game
+     * @param bagLocations - a string array of bagLocations
+     * @throws IllegalArgumentException //todo
+     */
+    public PebbleGame(int numberOfPlayers, String[] bagLocations) throws IllegalArgumentException {
+        //handle the players being less than 1
+        if (numberOfPlayers < 1) {
+            throw new IllegalArgumentException();
+        } else {
+            //generate number of players in different threads
+            this.numberOfPlayers = numberOfPlayers;
+
+            //load the bag files
+            for (int i = 0; i < 3; i++) {
+                //if there is an exception, this will be thrown back upwards
+                blackBags[i] = new Bag("Black " + i, bagLocations[i], numberOfPlayers);
+                whiteBags[i] = new Bag("White " + i);
+            }
+        }
+    }
+
+    /**
+     * Synchronized method to check whether a player has won (i.e. their hand sums to 100 with 10 items)
+     * It checks their hand which is stored in an array list
+     *
+     * @param playerHand
+     * @param playerNumber
+     * @return true if player has won, otherwise false
+     */
+    protected synchronized boolean hasWon(ArrayList<Integer> playerHand, int playerNumber){
         if (this.gameWon) {
             return this.gameWon;
         } else {
@@ -33,31 +73,30 @@ public class PebbleGame {
         }
     }
 
+    /**
+     * Test method for use in our Unit Tests so that we can initialise the constructor in the nested class
+     *
+     * @param playerNumber
+     * @return the constructor of the Player class with parameter playerNumber which is a nested class
+     */
     public Runnable returnPlayer(int playerNumber) {
         return new Player(playerNumber);
     }
 
-    public PebbleGame(int numberOfPlayers, String[] bagLocations) throws IllegalArgumentException {
-        //generate number of players in different threads
-        this.numberOfPlayers = numberOfPlayers;
-
-        //load the bag files
-        for (int i = 0; i < 3; i ++) {
-            //if there is an exception, this will be thrown back upwards
-            blackBags[i] = new Bag("Black " + i ,bagLocations[i], numberOfPlayers);
-            whiteBags[i] = new Bag("White " + i);
-        }
-    }
-
+    /**
+     * This method starts the "j" number of threads, based on how many players are playing
+     * It also sets the name of the threads
+     */
     public void startGame() {
         //generate the players
         for (int j = 0; j < this.numberOfPlayers; j ++) {
             Runnable runnable = new Player(j);
 
             Thread thread = new Thread(runnable);
-            thread.setName("Player " + j);
+            thread.setName("Player " + j); //todo - we can name the threads here
             thread.start();
         }
+        System.out.println("Running the game...");
     }
 
 
@@ -129,10 +168,20 @@ public class PebbleGame {
         private int previousBag;
         private ArrayList<String> playerLog = new ArrayList<>();
 
+        /**
+         * Constructor for the Player nested class
+         *
+         * @param playerNumber
+         */
         Player(int playerNumber) {
             this.playerNumber = playerNumber;
         }
 
+        /**
+         * This method randomly picks a black bag and randomly picks a pebble from the bag
+         * It ensures that there is a pebble in the bag to pick from
+         * If there is a valid pick, then it sets the previous
+         */
         //chooses the bag - not atomic
         private void pickBagAndPebble() {
             boolean picked = false;
@@ -154,7 +203,7 @@ public class PebbleGame {
 
                     //See if the bags need to be swapped
                     Bag.swapBags(blackBags[n], whiteBags[n]);
-                    //System.out.println("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
+                    System.out.println("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
                     this.playerLog.add("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
 
                 }

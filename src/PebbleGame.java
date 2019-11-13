@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-//todo change bag numbers ot letters
+//todo change bag numbers to letters
 //todo add additional features
 
 /**
@@ -32,7 +32,7 @@ public class PebbleGame {
      *
      * @param numberOfPlayers - the number of players to play the game
      * @param bagLocations - a string array of bagLocations
-     * @throws IllegalArgumentException //todo
+     * @throws IllegalArgumentException
      */
     public PebbleGame(int numberOfPlayers, String[] bagLocations) throws IllegalArgumentException {
         //Handle the players being less than 1
@@ -201,8 +201,8 @@ public class PebbleGame {
 
                 int n = rand.nextInt(3); //Random number between 0 and 2
 
-                Bag choosenBag = blackBags[n];
-                int newPebble = choosenBag.pickPebble(); //Picks a pebble from the randomly chosen black bag
+                Bag chosenBag = blackBags[n];
+                int newPebble = chosenBag.pickPebble(); //Picks a pebble from the randomly chosen black bag
 
                 if (newPebble == -1000) {
                     //Re-pick because that bag is inaccessible
@@ -216,7 +216,8 @@ public class PebbleGame {
                     Bag.swapBags(blackBags[n], whiteBags[n]);
 
                     System.out.println("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
-                    //Uploads player's log adding the drawn action
+
+                    //Adds to player's log the drawn action
                     this.playerLog.add("Player " + playerNumber + " has drawn " + newPebble + " from bag " + n + "\nPlayer " + playerNumber + " hand is " + playerHand);
                 }
             }
@@ -231,11 +232,13 @@ public class PebbleGame {
             Random rand = new Random();
             int i = rand.nextInt(9); //Random int between 0 and 9 (One of the pebbles in player's hand)
 
-            Bag choosenBag = whiteBags[this.previousBag];
-            int removedPebble = this.playerHand.remove(i);
-            choosenBag.bagPebbles.add(removedPebble);
+            Bag chosenBag = whiteBags[this.previousBag]; //The white bag which the pebble will be placed into
+            int removedPebble = this.playerHand.remove(i); //Pebble removed from player's hand
+            chosenBag.bagPebbles.add(removedPebble); //Pebble added to the white bag
 
             //System.out.println("Player " + playerNumber + " has discarded " + removedPebble + " from bag " + i + "\nPlayer " + playerNumber + " hand is " + playerHand);
+
+            //Adds to player's log the drawn action
             this.playerLog.add("Player " + playerNumber + " has discarded " + removedPebble + " from bag " + i + "\nPlayer " + playerNumber + " hand is " + playerHand);
         }
 
@@ -244,11 +247,11 @@ public class PebbleGame {
          * It writes the player's log onto the associated player's output text file
          */
         private void saveLog() {
-            String filename = "player" + this.playerNumber + "_output.txt";
+            String filename = "player" + this.playerNumber + "_output.txt"; //Name of text-file to be created for each player
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
-                String output = String.join("\n", this.playerLog);
-                writer.write(output);
+                String output = String.join("\n", this.playerLog); //Makes the array-list for this player a string, with each item separated by a new line
+                writer.write(output); //Writes to the text-file (overrides whatever is in the text-file prior)
                 writer.close();
             } catch (IOException e) {
                 System.out.println("Unable to write to file");
@@ -263,18 +266,16 @@ public class PebbleGame {
          */
         @Override
         public void run() {
-            for (int i = 0; i < 10; i ++) {
-                this.pickBagAndPebble();
+            for (int i = 0; i < 10; i ++) { //For loop from 0 to 9 picking the initial 10 pebbles for a hand
+                this.pickBagAndPebble(); //Builds the hand
             }
 
-            while (!hasWon(this.playerHand, this.playerNumber)){
-                //System.out.println(this.playerHand);
+            while (!hasWon(this.playerHand, this.playerNumber)){ //While no-one has won, discard a pebble and pick another
                 this.discardPebble();
                 this.pickBagAndPebble();
             }
 
-            //save everything to a file
-            //System.out.println(this.playerLog);
+            //When outside of the while loop (when someone has won), save the logs to the respective player's text-file
             this.saveLog();
         }
     }

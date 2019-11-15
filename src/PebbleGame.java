@@ -31,6 +31,7 @@ public class PebbleGame {
      * Creates the black and white bags and puts them in two different arrays
      *
      * @param numberOfPlayers - the number of players to play the game
+     * @param playerNames - a string array of the different player names
      * @param bagLocations - a string array of bagLocations
      * @throws IllegalArgumentException
      */
@@ -39,17 +40,16 @@ public class PebbleGame {
         if (numberOfPlayers < 1) {
             throw new IllegalArgumentException();
         } else {
-            //Generate number of players in different threads
             this.numberOfPlayers = numberOfPlayers;
             this.playerNames = playerNames;
 
-            String[][] names = {{"A", "X"}, {"B", "Y"}, {"C", "Z"}};
+            String[][] names = {{"A", "X"}, {"B", "Y"}, {"C", "Z"}}; //The pairings of black and white bags
 
             //Load the bag files
             for (int i = 0; i < 3; i++) {
                 //If there is an exception, this will be thrown back upwards
-                blackBags[i] = new Bag(names[i][1], bagLocations[i], numberOfPlayers);
-                whiteBags[i] = new Bag(names[i][0]);
+                blackBags[i] = new Bag(names[i][1], bagLocations[i], numberOfPlayers); //black bags
+                whiteBags[i] = new Bag(names[i][0]); //white bags
             }
         }
     }
@@ -58,8 +58,8 @@ public class PebbleGame {
      * Synchronized method to check whether a player has won (i.e. their hand sums to 100 with 10 items)
      * It checks their hand which is stored in an array list
      *
-     * @param playerHand -
-     * @param playerName
+     * @param playerHand
+     * @param playerName - user defined player name
      * @return true if player has won, otherwise false
      */
     protected synchronized boolean hasWon(ArrayList<Integer> playerHand, String playerName){
@@ -86,7 +86,8 @@ public class PebbleGame {
      * Test method for use in our Unit Tests so that we can initialise the constructor in the nested class
      * By creating a method in the outer class accessing the inner, it can be used in the Unit tests
      *
-     * @param playerNumber
+     * @param playerName - user defined player name
+     * @param playerNumber - thread number of player
      * @return the constructor of the Player class with parameter playerNumber which is a nested class
      */
     public Runnable returnPlayer(String playerName, int playerNumber) {
@@ -95,7 +96,7 @@ public class PebbleGame {
 
     /**
      * This method starts the "j" number of threads, based on how many players are playing
-     * It also sets the name of the threads
+     * It also sets the name of the threads based on what the users have defined
      */
     public void startGame() {
         //Generate the players and threads
@@ -112,6 +113,8 @@ public class PebbleGame {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in); //Scanner object is created for later use
+
+        //Welcome message:
         System.out.println("Welcome to the Pebble Game! \nYou will be asked to enter the number of players and then for the location of three files in turn containing comma separated integer values for the pebble weights.\nThe integer values must be strictly positive.\nThe game will then be simulated, and the output written to files in this directory.");
 
         boolean success = false; //Used in the while loop to make sure all inputs are correct before game progresses
@@ -157,16 +160,17 @@ public class PebbleGame {
                 }
 
                 if (allFiles) { //if allFiles is true
+                    //Sets the name of each player:
                     String[] playerNames = new String[numberOfPlayers]; //String array of length of the number of players
                     for (int i = 0; i < numberOfPlayers; i++) {
-                        System.out.println("Please enter a name for player " + i + ": ");
+                        System.out.println("Please enter a name for player " + i + ": "); //Additional feature
                         String playerName = scanner.nextLine(); //Takes in the next line
 
                         if (playerName.length() > 0) {
                             if (playerName.equals("E")) { //User wants to exit
                                 success = true;
                                 break;
-                            } else {//check it is a csv / txt
+                            } else { //todo - check what happens with .docx files etc
                                 playerNames[i] = playerName; //Places given bag location from scanner into array
                             }
                         } else {
@@ -176,7 +180,7 @@ public class PebbleGame {
                     }
                     //Pass the files to the constructor
                     try {
-                        PebbleGame game = new PebbleGame(numberOfPlayers, playerNames, bagLocations); //Creates a PebbleGame
+                        PebbleGame game = new PebbleGame(numberOfPlayers, playerNames, bagLocations); //Creates a PebbleGame with the number of players, their names and the bag locations
                         game.startGame(); //Starts the new game
                         success = true;
                     } catch (IllegalArgumentException e) {
@@ -195,18 +199,18 @@ public class PebbleGame {
      * Nested class called Player which implements the Runnable interface
      */
     class Player implements Runnable {
-        private ArrayList<Integer> playerHand = new ArrayList<>(); //ArrayList to hold the players' hand
+        private ArrayList<Integer> playerHand = new ArrayList<>(); //Integer ArrayList to hold the players' hand
         private String playerName;
         private int playerNumber;
-        private int previousBag; //Int to hold the bag the player last took from
+        private int previousBag; //Int to hold the bag the player last took from (for use in discarding)
         private ArrayList<String> playerLog = new ArrayList<>(); //ArrayList to hold the players' activity log
 
         /**
          * Constructor for the Player nested class
-         *
          * @param playerName
+         * @param playerNumber
          */
-        Player(String playerName, int playerNumber) { //Generates a player when given a player number
+        Player(String playerName, int playerNumber) { //Sets the player's name and number
             this.playerName = playerName;
             this.playerNumber = playerNumber;
         }
@@ -238,6 +242,7 @@ public class PebbleGame {
                     //See if the bags need to be swapped
                     Bag.swapBags(blackBags[n], whiteBags[n]);
 
+                    //Prints the drawn output to the user -> additional feature
                     System.out.println(this.playerName + " has drawn " + newPebble + " from bag " + chosenBag.getName() + "\n" + this.playerName + " hand is " + playerHand);
 
                     //Adds to player's log the drawn action
@@ -259,6 +264,7 @@ public class PebbleGame {
             int removedPebble = this.playerHand.remove(i); //Pebble removed from player's hand
             chosenBag.bagPebbles.add(removedPebble); //Pebble added to the white bag
 
+            //Prints the discard output to the user -> additional feature
             System.out.println(this.playerName + " has discarded " + removedPebble + " to bag " + chosenBag.getName() + "\n" + this.playerName + " hand is " + playerHand);
 
             //Adds to player's log the drawn action

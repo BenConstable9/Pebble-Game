@@ -144,7 +144,7 @@ public class PebbleGame {
                             allFiles = false;
                             success = true;
                             break;
-                        } else if (bagLocation.contains(".txt") || bagLocation.contains(".csv")) {//check it is a csv / txt
+                        } else if (bagLocation.contains(".txt") || bagLocation.contains(".csv")) {//check it is a .txt or .csv file
                             bagLocations[i] = bagLocation; //Places given bag location from scanner into array
                         } else {
                             allFiles = false;

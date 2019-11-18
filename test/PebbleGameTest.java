@@ -43,7 +43,7 @@ public class PebbleGameTest {
 
     /**
      * Will use the given input and simulate it as if it has come from the keyboard.
-     * Will redirect the output to a attribute.
+     * Will redirect the output to an attribute.
      * @param input - the new input for the keyboard.
      */
     private void getInput(String input) {
@@ -74,7 +74,7 @@ public class PebbleGameTest {
     public void testStartGame() {
         this.game.startGame();
 
-        //count the number of threads which are correctly named
+        //count the number of threads which are correctly named - CAN WE NOT JUST USE: java.lang.Thread.activeCount()
         int running = 0;
         //put the threads into a set and iterate
         for (Thread t : Thread.getAllStackTraces().keySet()) {
@@ -111,7 +111,7 @@ public class PebbleGameTest {
     }
 
     /**
-     * Test the constructor with an negative number of players.
+     * Test the constructor with a negative number of players.
      * Should produce exception as this is not allowed.
      */
     @Test (expected = IllegalArgumentException.class)
@@ -142,7 +142,7 @@ public class PebbleGameTest {
     public void testHasWonInvalidHand() {
         //create an hand to use for the test which does not add up to 100
         ArrayList<Integer> hand = new ArrayList<>();
-        hand.addAll(Arrays.asList(1,4,5,7,3,30,5,2,9,10));
+        hand.addAll(Arrays.asList(1,2,3,4,5,6,7,8,9,10)); //sums to 55
 
         //find the result and assert it
         boolean result = this.game.hasWon(hand, "Player 0");
@@ -158,7 +158,7 @@ public class PebbleGameTest {
     public void testHasWonWinningHand() {
         //create a hand for them
         ArrayList<Integer> hand = new ArrayList<>();
-        hand.addAll(Arrays.asList(12,16,24,5,1,26,6,5,1,4));
+        hand.addAll(Arrays.asList(2, 4, 6, 8, 10, 10, 12, 14, 16, 18)); //sums to 100
 
         //get the result of the game and assert
         boolean result = this.game.hasWon(hand, "Player 0");
@@ -198,10 +198,10 @@ public class PebbleGameTest {
         try {
             //use reflection to access the methods of the player as they cannot be accessed
             Method method = null;
-            method = runnable.getClass().getDeclaredMethod("saveLog", null);
+            method = runnable.getClass().getDeclaredMethod("saveLog", null); //gets the saveLog() method
             method.setAccessible(true);
 
-            //invoke the method savelog
+            //invoke the method savelog through runnable
             method.invoke(runnable, null);
 
             //check if the file exists
@@ -226,15 +226,15 @@ public class PebbleGameTest {
         try {
             //get the method pickBagAndPebble
             Method method = null;
-            method = runnable.getClass().getDeclaredMethod("pickBagAndPebble", null);
+            method = runnable.getClass().getDeclaredMethod("pickBagAndPebble", null); //get the pickBagAndPebble() method
             method.setAccessible(true);
 
             //invoke this method which will update the player hand
             method.invoke(runnable, null);
 
-            //now get the players hand
+            //now get the player's hand
             Field field = null;
-            field = runnable.getClass().getDeclaredField("playerHand");
+            field = runnable.getClass().getDeclaredField("playerHand"); //get the playerHand attribute
             field.setAccessible(true);
 
             //cast this to an ArrayList as this is what will be returned

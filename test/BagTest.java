@@ -102,7 +102,7 @@ public class BagTest {
 
     /**
      * Test the swapBags function.
-     * Test by using a empty bag and a full bag and seeing if the sizes match before and after.
+     * Test by using an empty bag and a full bag and seeing if the sizes match before and after.
      */
     @Test
     public void testSwapBags() {

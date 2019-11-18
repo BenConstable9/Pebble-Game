@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-//todo add additional features
-
 /**
  * The PebbleGame Paired-Programming coursework.
  * By storing the black and white bags as Bag objects, you can call the Bag.java methods
@@ -36,7 +34,7 @@ public class PebbleGame {
      */
     public PebbleGame(int numberOfPlayers, String[] playerNames, String[] bagLocations) throws IllegalArgumentException {
         //Handle the players being less than 1
-        if (numberOfPlayers < 1) {
+        if (numberOfPlayers < 1 || bagLocations.length != 3 || numberOfPlayers != playerNames.length) {
             throw new IllegalArgumentException();
         } else {
             //Generate number of players in different threads
@@ -80,17 +78,6 @@ public class PebbleGame {
                 return false;
             }
         }
-    }
-
-    /**
-     * Test method for use in our Unit Tests so that we can initialise the constructor in the nested class
-     * By creating a method in the outer class accessing the inner, it can be used in the Unit tests
-     *
-     * @param playerNumber
-     * @return the constructor of the Player class with parameter playerNumber which is a nested class
-     */
-    public Runnable returnPlayer(String playerName, int playerNumber) {
-        return new Player(playerName, playerNumber);
     }
 
     /**

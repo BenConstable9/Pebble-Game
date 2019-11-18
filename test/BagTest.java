@@ -119,4 +119,16 @@ public class BagTest {
         //check the sizes now equal
         assertEquals(emptyBlackBag.bagPebbles.size(), fullWhiteBagSize);
     }
+
+    /**
+     * Test the get name method.
+     */
+    @Test
+    public void testGetName() {
+        //create an empty bag
+        Bag testBag = new Bag("TestBag");
+
+        //check that the name is TestBag
+        assertEquals(testBag.getName(), "TestBag");
+    }
 }

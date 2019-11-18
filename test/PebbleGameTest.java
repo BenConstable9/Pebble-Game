@@ -1,14 +1,10 @@
 //Used for the JUnit tests
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 //Used within the testing code
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.lang.reflect.*;
@@ -43,30 +39,20 @@ public class PebbleGameTest {
         String[] bagLocations = new String[]{"testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt"};
         String[] playerNames = new String[]{"Dave", "Bob", "Steve", "Kate"};
         this.game = new PebbleGame(4, playerNames, bagLocations);
-
-        //Save the output elsewhere
-        testOut = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(testOut));
-    }
-
-    /**
-     * Redirect the inputs and outputs back to their orginal place.
-     * Automtaically called after each test.
-     */
-    @After
-    public void tearDown() {
-        //redirect
-        System.setIn(systemIn);
-        System.setOut(systemOut);
     }
 
     /**
      * Will use the given input and simulate it as if it has come from the keyboard.
-     * @param data - the new input for the keyboard.
+     * Will redirect the output to a attribute.
+     * @param input - the new input for the keyboard.
      */
-    private void provideInput(String data) {
+    private void getInput(String input) {
+        //Save the output elsewhere
+        this.testOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(this.testOut));
+
         //use a byte array stream to use for the data
-        testIn = new ByteArrayInputStream(data.getBytes());
+        testIn = new ByteArrayInputStream(input.getBytes());
         System.setIn(testIn);
     }
 
@@ -75,7 +61,10 @@ public class PebbleGameTest {
      * @return - the printed lines.
      */
     private String getOutput() {
-        return testOut.toString();
+        //redirect
+        System.setIn(systemIn);
+        System.setOut(systemOut);
+        return this.testOut.toString();
     }
 
     /**
@@ -86,14 +75,16 @@ public class PebbleGameTest {
         this.game.startGame();
 
         //count the number of threads which are correctly named
-        int nbRunning = 0;
+        int running = 0;
         //put the threads into a set and iterate
         for (Thread t : Thread.getAllStackTraces().keySet()) {
-            if (t.getName().contains("Player ")) nbRunning++;
+            if (t.getName().contains("Player ")) {
+                running++;
+            }
         }
 
         //check if it is 4 (the number produced by setUp)
-        assertEquals(4, nbRunning);
+        assertEquals(4, running);
     }
 
     /**
@@ -129,6 +120,18 @@ public class PebbleGameTest {
         String[] bagLocations = new String[]{"testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt"};
         String[] playerNames = new String[]{"Dave", "Bob", "Steve", "Kate"};
         new PebbleGame(-1, playerNames, bagLocations);
+    }
+
+    /**
+     * Test the constructor with an a different number of names to players
+     * Should produce exception as this is not allowed.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testPebbleGameConstructorMismatchedPlayers() {
+        //Pass the files into the constructor
+        String[] bagLocations = new String[]{"testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt"};
+        String[] playerNames = new String[]{"Dave", "Bob", "Steve", "Kate"};
+        new PebbleGame(3, playerNames, bagLocations);
     }
 
     /**
@@ -189,7 +192,7 @@ public class PebbleGameTest {
     @Test
     public void testSaveLog() {
         //get the instance of a player
-        Runnable runnable = this.game.returnPlayer("Dave", 1);
+        Runnable runnable = this.game.new Player("Dave", 0);
 
         //handle the exceptions
         try {
@@ -200,6 +203,12 @@ public class PebbleGameTest {
 
             //invoke the method savelog
             method.invoke(runnable, null);
+
+            //check if the file exists
+            File tempFile = new File("player0_output.txt");
+            boolean exists = tempFile.exists();
+
+            assertTrue(exists);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -212,7 +221,7 @@ public class PebbleGameTest {
     @Test
     public void testPickBagAndPebble() {
         //get an instance of a player
-        Runnable runnable = this.game.returnPlayer("Dave", 1);
+        Runnable runnable = this.game.new Player("Dave", 0);
 
         try {
             //get the method pickBagAndPebble
@@ -244,7 +253,7 @@ public class PebbleGameTest {
     @Test
     public void testPlayerConstructor() {
         //get an instance of the player and see if the threads starts
-        Runnable runnable = this.game.returnPlayer("Dave", 0);
+        Runnable runnable = this.game.new Player("Dave", 0);
 
         Thread thread = new Thread(runnable);
         thread.setName("Player " + 0);
@@ -261,7 +270,7 @@ public class PebbleGameTest {
         final String testString = "HJJH\nE";
 
         //add this to the correct stream
-        provideInput(testString);
+        getInput(testString);
 
         //call the main function
         PebbleGame.main(new String[0]);
@@ -280,7 +289,7 @@ public class PebbleGameTest {
         final String testString = "20\ntextfile.txt\ntextfile.txt\nrandomTextFile.txt\nE";
 
         //add it to the correct stream
-        provideInput(testString);
+        getInput(testString);
 
         //call the main function
         PebbleGame.main(new String[0]);

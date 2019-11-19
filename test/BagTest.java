@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
  *
  * @version 1.0
  * @since 2019-24-10
+ * Built using Java 13
  */
 
 public class BagTest {
@@ -93,11 +94,11 @@ public class BagTest {
      */
     @Test
     public void testPickPebbleEmptyBag() {
-        //create the empty bag.
+        //create the empty bag
         Bag testEmptyBag = new Bag("Empty");
 
         //check the returned value
-        assertEquals(testEmptyBag.pickPebble(), -1000);
+        assertEquals(testEmptyBag.pickPebble(), -1000); //-1000 is our error number in our code for this condition
     }
 
     /**

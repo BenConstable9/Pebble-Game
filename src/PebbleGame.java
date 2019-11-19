@@ -35,7 +35,7 @@ public class PebbleGame {
      * @throws IllegalArgumentException
      */
     public PebbleGame(int numberOfPlayers, String[] playerNames, String[] bagLocations) throws IllegalArgumentException {
-        //Handle the players being less than 1
+        //Handle the players being less than 1, bag locations not equalling 3 and wrong number of player names
         if (numberOfPlayers < 1 || bagLocations.length != 3 || numberOfPlayers != playerNames.length) {
             throw new IllegalArgumentException();
         } else {
@@ -82,17 +82,6 @@ public class PebbleGame {
     }
 
     /**
-     * Test method for use in our Unit Tests so that we can initialise the constructor in the nested class
-     * By creating a method in the outer class accessing the inner, it can be used in the Unit tests
-     *
-     * @param playerNumber
-     * @return the constructor of the Player class with parameter playerNumber which is a nested class
-     */
-    public Runnable returnPlayer(String playerName, int playerNumber) {
-        return new Player(playerName, playerNumber);
-    }
-
-    /**
      * This method starts the "j" number of threads, based on how many players are playing
      * It also sets the name of the threads based on what the users have defined
      */
@@ -101,9 +90,10 @@ public class PebbleGame {
         for (int j = 0; j < this.numberOfPlayers; j ++) {
             Runnable runnable = new Player("Player " + j + " (" + this.playerNames[j] + ")", j);
 
+            //Start the threads and set their names to the given names
             Thread thread = new Thread(runnable);
             thread.setName("Player " + j);
-            thread.start();
+            thread.start(); //Starts the run() method
         }
         System.out.println("Running the game...");
     }
@@ -146,7 +136,7 @@ public class PebbleGame {
                             success = true;
                             break;
                         } else if (bagLocation.contains(".txt") || bagLocation.contains(".csv")) {//check it is a .txt or .csv file
-                            bagLocations[i] = bagLocation; //Places given bag location from scanner into array
+                            bagLocations[i] = bagLocation; //Places given bag location from scanner into array at index i
                         } else {
                             allFiles = false;
                             break;
@@ -176,7 +166,7 @@ public class PebbleGame {
                             break;
                         }
                     }
-                    //Pass the files to the constructor
+                    //Passes the values to the constructor to initialise a game
                     try {
                         PebbleGame game = new PebbleGame(numberOfPlayers, playerNames, bagLocations); //Creates a PebbleGame with the number of players, their names and the bag locations
                         game.startGame(); //Starts the new game
@@ -208,7 +198,7 @@ public class PebbleGame {
          * @param playerName
          * @param playerNumber
          */
-        Player(String playerName, int playerNumber) { //Sets the player's name and number
+        Player(String playerName, int playerNumber) { //Sets the given player's name and number to this object
             this.playerName = playerName;
             this.playerNumber = playerNumber;
         }
@@ -216,7 +206,7 @@ public class PebbleGame {
         /**
          * This method randomly picks a black bag and randomly picks a pebble from the bag (by calling Bag class)
          * It ensures that there is a pebble in the bag to pick from
-         * If there is a valid pick, then it sets the previous
+         * If there is a valid pick, then it sets the previousBag to that black bag
          * Adds the pick details onto the player's log - to output to their text-file at the end
          */
         private void pickBagAndPebble() {
@@ -252,7 +242,7 @@ public class PebbleGame {
         /**
          * This method removes a random pebble from the player's hand when they reach 10 pebbles
          * It then adds the removed pebble onto the associated white bag from the last black bag picked
-         * Adds the pick details onto the player's log - to output to their text-file at the end
+         * It adds the pick details onto the player's log - to output to their text-file at the end (and also prints it to the user)
          */
         private void discardPebble(){
             Random rand = new Random();
@@ -289,7 +279,7 @@ public class PebbleGame {
          * This is the method that is ran when you start the threads
          * Each thread will initially pick 10 pebbles each to build its hand
          * After which, it will keep running the game and follow the rules until a thread has won
-         * When someone has won, each thread will start the saveLog() method to upload their hand onto the text-file
+         * When someone has won, each thread will start the saveLog() method to upload their hand onto their text-file
          */
         @Override
         public void run() {

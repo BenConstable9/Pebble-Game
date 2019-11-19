@@ -8,6 +8,7 @@ import java.util.Random;
 
 /**
  * The Bag Class
+ * Built using Java 13
  *
  * @version 1.0
  * @since 2019-24-10
@@ -17,7 +18,7 @@ import java.util.Random;
 public class Bag {
     private String name;
 
-    //Synchronized list ensures any method accessing the list will never conflict
+    //Synchronized list of integers to ensures any method accessing the list will never conflict
     public List<Integer> bagPebbles = Collections.synchronizedList(new ArrayList<Integer>());
 
     /**
@@ -46,7 +47,7 @@ public class Bag {
         String[] bagPebblesString = {};
         try {
             BufferedReader reader = new BufferedReader(new FileReader(bagLocation));
-            bagPebblesString = reader.readLine().split(","); //Splits whenever there is a comma
+            bagPebblesString = reader.readLine().split(","); //Splits whenever there is a comma (deals with csv)
         } catch (IOException e) {
             System.out.println("Some of the files cannot be found.");
             validBag = false;
@@ -55,6 +56,7 @@ public class Bag {
         //Only proceed if bags are valid and thus found
         if (validBag) {
             if (bagPebblesString.length >= (11 * numberOfPlayers)) { //Complies with rule that pebbles > 11*numOfPlayers
+
                 //Iterates through each pebble in the bag
                 for (String bagPebbleString : bagPebblesString) {
                     try {
@@ -93,7 +95,7 @@ public class Bag {
 
     /**
      * Synchronised method called from the PebbleGame.java file, which picks a random pebble from the correct bag
-     * @return - the bag with the element removes, or -1000 if you cannot remove from this bag in which case
+     * @return - the bag with the element removes, or -1000 error code if you cannot remove from this bag in which case
      *              the associated white bag must be emptied into that black bag
      */
     synchronized int pickPebble() { //Synchronized to ensure no conflicts

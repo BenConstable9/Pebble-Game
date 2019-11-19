@@ -14,15 +14,18 @@ import java.lang.reflect.*;
  *
  * @version 1.0
  * @since 2019-24-10
+ * Built using Java 13
  */
 
-public class PebbleGameTest {
+public class PebbleGameTest { //CHECK THE COMMENTS HERE
     //used for remapping the outputs and inputs
-    private final InputStream systemIn = System.in;
-    private final PrintStream systemOut = System.out;
+    //https://stackoverflow.com/questions/1647907/junit-how-to-simulate-system-in-testing
+    //we used the above site to aid us in how to run these system input/output tests
+    private final InputStream systemIn = System.in; //what does it do?
+    private final PrintStream systemOut = System.out;//and this
 
-    private ByteArrayInputStream testIn;
-    private ByteArrayOutputStream testOut;
+    private ByteArrayInputStream testIn; //and this
+    private ByteArrayOutputStream testOut; //and this
 
     //used to store the generic game for testing
     private PebbleGame game;
@@ -30,11 +33,11 @@ public class PebbleGameTest {
     /**
      * Handles making a bag to be used for generic testing within the tests.
      * Redirects the input and output streams to allow us to examine it.
-     * Automatically called before each test.
+     * Automatically called before each test - so sets the conditions for the other tests to be able to be ran
      * @throws Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws Exception { //What does setUp() do???
         //Create a new game and store it
         String[] bagLocations = new String[]{"testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt"};
         String[] playerNames = new String[]{"Dave", "Bob", "Steve", "Kate"};
@@ -61,7 +64,7 @@ public class PebbleGameTest {
      * @return - the printed lines.
      */
     private String getOutput() {
-        //redirect
+        //redirect                                 -REDIRECT WHERE TO?????
         System.setIn(systemIn);
         System.setOut(systemOut);
         return this.testOut.toString();
@@ -76,7 +79,7 @@ public class PebbleGameTest {
 
         //count the number of threads which are correctly named - CAN WE NOT JUST USE: java.lang.Thread.activeCount()
         int running = 0;
-        //put the threads into a set and iterate
+        //put the threads into a set and iterate through it
         for (Thread t : Thread.getAllStackTraces().keySet()) {
             if (t.getName().contains("Player ")) {
                 running++;
@@ -262,9 +265,8 @@ public class PebbleGameTest {
 
     /*The next two test's code for redirecting system inputs was created using the responses to this StackOverflow question:
     https://stackoverflow.com/questions/1647907/junit-how-to-simulate-system-in-testing.
-    We have adapted the code for our use in the next two tests.
+    We have adapted the code for our use in the two tests.
      */
-
     /**
      * Tests the main and the keyboard inputs.
      * Uses the input redirection to test this.
@@ -277,7 +279,7 @@ public class PebbleGameTest {
         //add this to the correct stream
         getInput(testString);
 
-        //call the main function
+        //calls the main function
         PebbleGame.main(new String[0]);
 
         //check the output is an error message saying the number of players cannot be detected as letters were passed in

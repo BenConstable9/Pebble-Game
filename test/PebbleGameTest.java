@@ -260,9 +260,14 @@ public class PebbleGameTest {
         thread.start();
     }
 
+    /*The next two test's code for redirecting system inputs was created using the responses to this StackOverflow question:
+    https://stackoverflow.com/questions/1647907/junit-how-to-simulate-system-in-testing.
+    We have adapted the code for our use in the next two tests.
+     */
+
     /**
-     * Test the main and the keyboard inputs.
-     * Use the input redirection to test this.
+     * Tests the main and the keyboard inputs.
+     * Uses the input redirection to test this.
      */
     @Test
     public void testMainInvalidPlayers() {
@@ -281,7 +286,7 @@ public class PebbleGameTest {
 
     /**
      * Test the main method using keyboard inputs.
-     * Use redirection to test this.
+     * Uses redirection to test this.
      */
     @Test
     public void testMainInvalidFile() {

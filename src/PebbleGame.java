@@ -8,6 +8,7 @@ import java.util.Scanner;
 /**
  * The PebbleGame Paired-Programming coursework.
  * By storing the black and white bags as Bag objects, you can call the Bag.java methods
+ * Built using Java 13
  *
  * @version 1.0
  * @since 2019-24-10

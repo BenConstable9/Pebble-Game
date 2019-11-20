@@ -10,19 +10,40 @@ A single test suite is provided for testing; testing is implemented with **JUnit
 ###### Running the Tests
 Tests can be run using a standard Java IDE such as **IntelliJ IDEA** and running the test TestSuite.
 
-If you are using InteliJ IDEA:
-1) You may have to go onto Project Structure and mark the test file (which contains all of the test) as the Test folder.
-    
-    a) File -> Project Structure -> click on our "test" folder and mark as Tests
-2) If JUnit 4 is not already in the classpath, go onto any of the annotations in any test file, and hover over it
-    
-    a) Click on the pop-up saying "Add JUnit 4 to class path" (alternatively press Alt + Shift + Enter)
-    
-    b) When the pop-up appears, press the continue button 
-3) Go onto the TestSuite file and right click on the page and select 'Run 'TestSuite' with Coverage'
-    
-    a) This will run the TestSuite and thus the BagTest and PebbleGameTest JUnit files
+If you are using IntelliJ IDEA:
+1) First, create a new project in IntelliJ using the JDK13 as the Project SDK
+    a) Call the project whatever you wish
+  
+2) When the project has been created, expand it in the project view until you see the "src" folder
 
+3) Within the src folder, drag and drop the following files which can be found in the pebblesTest.zip folder
+    a) PebbleGame.java
+    b) Bag.java
+ 
+4) On the project details at the right, right click on the project name, click New and create a new directory called "Test"
+
+5) You need to tell the IDE that this is the test folder - go onto the Project Structure and mark the new folder as a Test folder
+    a) File -> Project Structure -> Modules -> click on the new "Test" folder and mark as Test
+
+6) Within the folder (which should now be coloured green), drag and drop the following files (the test files) from the pebblesTest.zip folder
+    a) BagTest.java
+    b) PebbleGameTest.java
+    c) TestSuite.java
+ 
+7) Within the Project directory, add all of the text files (.txt) and the excel example .csv file 
+    a) All of these files can be found in the pebblesTest.zip folder
+    
+8) Go onto any of the test files and you may find that JUnit 4 is not already in the classpath
+    a) Go onto any of the annotations, for example @Before
+    b) Hover over it until a pop-up appears saying "Add Junit 4 to class path"
+    c) Click on the pop-up
+    d) Press "continue" so that JUnit 4 is added to the classpath
+    
+9) To run the Test Suite, go onto the Test Suite file and right click on the page and select "Run 'TestSuite' with Coverage'
+    a) This will run the TestSuite and thus the BagTest and PebbleGameTest Junit files too
+
+10) If you wish to run the JUnit files separately, then you can right-click on their files and choose the same option of running with coverage
+   
  
 ###### Outputs:
 All of the tests should pass.

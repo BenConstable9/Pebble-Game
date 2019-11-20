@@ -98,7 +98,11 @@ public class PebbleGame {
         System.out.println("Running the game...");
     }
 
-
+    /**
+     * The main function contains many parts of the program such as the constructor and user inputs
+     * It initially begins by welcoming the user to the game and asking for the inputs
+     * @param args
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in); //Scanner object is created for later use
 

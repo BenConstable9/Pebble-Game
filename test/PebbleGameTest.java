@@ -17,15 +17,15 @@ import java.lang.reflect.*;
  * Built using Java 13
  */
 
-public class PebbleGameTest { //CHECK THE COMMENTS HERE
-    //used for remapping the outputs and inputs
+public class PebbleGameTest {
+    //used for remapping the outputs and inputs from keyboard/console to string
     //https://stackoverflow.com/questions/1647907/junit-how-to-simulate-system-in-testing
     //we used the above site to aid us in how to run these system input/output tests
-    private final InputStream systemIn = System.in; //what does it do?
-    private final PrintStream systemOut = System.out;//and this
+    private final InputStream systemIn = System.in; //keyboard inputs
+    private final PrintStream systemOut = System.out;//prints to console
 
-    private ByteArrayInputStream testIn; //and this
-    private ByteArrayOutputStream testOut; //and this
+    private ByteArrayInputStream testIn; //testing string in
+    private ByteArrayOutputStream testOut; //testing string out
 
     //used to store the generic game for testing
     private PebbleGame game;
@@ -36,8 +36,8 @@ public class PebbleGameTest { //CHECK THE COMMENTS HERE
      * Automatically called before each test - so sets the conditions for the other tests to be able to be ran
      * @throws Exception
      */
-    @Before
-    public void setUp() throws Exception { //What does setUp() do???
+    @Before //Ran before every @Test
+    public void setUp() throws Exception {
         //Create a new game and store it
         String[] bagLocations = new String[]{"testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt"};
         String[] playerNames = new String[]{"Dave", "Bob", "Steve", "Kate"};
@@ -64,7 +64,8 @@ public class PebbleGameTest { //CHECK THE COMMENTS HERE
      * @return - the printed lines.
      */
     private String getOutput() {
-        //redirect                                 -REDIRECT WHERE TO?????
+        //resets input and output to original
+        //returns a string of output from the program
         System.setIn(systemIn);
         System.setOut(systemOut);
         return this.testOut.toString();
@@ -77,10 +78,10 @@ public class PebbleGameTest { //CHECK THE COMMENTS HERE
     public void testStartGame() {
         this.game.startGame();
 
-        //count the number of threads which are correctly named - CAN WE NOT JUST USE: java.lang.Thread.activeCount()
+        //count the number of threads which are correctly named
         int running = 0;
         //put the threads into a set and iterate through it
-        for (Thread t : Thread.getAllStackTraces().keySet()) {
+        for (Thread t : Thread.getAllStackTraces().keySet()) { //puts the active threads into a set to iterate
             if (t.getName().contains("Player ")) {
                 running++;
             }
@@ -91,7 +92,7 @@ public class PebbleGameTest { //CHECK THE COMMENTS HERE
     }
 
     /**
-     * Test the constructor for the game.
+     * Test the constructor for the PebbleGame.
      */
     @Test
     public void testPebbleGameConstructor() {
@@ -135,6 +136,20 @@ public class PebbleGameTest { //CHECK THE COMMENTS HERE
         String[] bagLocations = new String[]{"testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt", "testPebbleGameConstructor.txt"};
         String[] playerNames = new String[]{"Dave", "Bob", "Steve", "Kate"};
         new PebbleGame(3, playerNames, bagLocations);
+    }
+
+    /**
+     * Test the constructor for a new Player to see if it produces any exceptions.
+     * Player is the nested class
+     */
+    @Test
+    public void testPlayerConstructor() {
+        //get an instance of the player and see if the threads starts
+        Runnable runnable = this.game.new Player("Dave", 0);
+
+        Thread thread = new Thread(runnable);
+        thread.setName("Player " + 0);
+        thread.start();
     }
 
     /**
@@ -250,18 +265,6 @@ public class PebbleGameTest { //CHECK THE COMMENTS HERE
         }
     }
 
-    /**
-     * Test the constructor for a new player to see if it produces any exceptions.
-     */
-    @Test
-    public void testPlayerConstructor() {
-        //get an instance of the player and see if the threads starts
-        Runnable runnable = this.game.new Player("Dave", 0);
-
-        Thread thread = new Thread(runnable);
-        thread.setName("Player " + 0);
-        thread.start();
-    }
 
     /*The next two test's code for redirecting system inputs was created using the responses to this StackOverflow question:
     https://stackoverflow.com/questions/1647907/junit-how-to-simulate-system-in-testing.
@@ -294,6 +297,8 @@ public class PebbleGameTest { //CHECK THE COMMENTS HERE
     public void testMainInvalidFile() {
         //set up our new input with an invalid file
         final String testString = "20\ntextfile.txt\ntextfile.txt\nrandomTextFile.txt\nE";
+        //                        number of players, bag locations and then terminating the program
+        // had to terminate the program with "E" otherwise program would constantly run
 
         //add it to the correct stream
         getInput(testString);

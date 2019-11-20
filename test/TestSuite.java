@@ -12,7 +12,7 @@ import org.junit.runners.Suite;
 
 //Run the Suite
 @RunWith(Suite.class)
-@Suite.SuiteClasses({BagTest.class, PebbleGameTest.class})
+@Suite.SuiteClasses({BagTest.class, PebbleGameTest.class}) //runs the JUnit test files
 
 public class TestSuite {
     //empty as a holder

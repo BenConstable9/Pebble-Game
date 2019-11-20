@@ -7,7 +7,7 @@ import org.junit.runners.Suite;
  *
  * @version 1.0
  * @since 2019-24-10
- * Built using Java 13
+ * Built using Java 13 and JUnit 4
  */
 
 //Run the Suite

@@ -9,13 +9,65 @@ A single test suite is provided for testing; testing is implemented with **JUnit
 
 ###### Running the Tests
 Tests can be run using a standard Java IDE such as **IntelliJ IDEA** and running the test TestSuite.
-You can run the tests from the command line using:
 
-*java -cp .:/usr/share/java/junit.jar org.junit.runner.JUnitCore TestSuite.class*
+If you are using InteliJ IDEA:
+1) You may have to go onto Project Structure and mark the test file (which contains all of the test) as the Test folder.
+    
+    a) File -> Project Structure -> click on our "test" folder and mark as Tests
+2) If JUnit 4 is not already in the classpath, go onto any of the annotations in any test file, and hover over it
+    
+    a) Click on the pop-up saying "Add JUnit 4 to class path" (alternatively press Alt + Shift + Enter)
+    
+    b) When the pop-up appears, press the continue button 
+3) Go onto the TestSuite file and right click on the page and select 'Run 'TestSuite' with Coverage'
+    
+    a) This will run the TestSuite and thus the BagTest and PebbleGameTest JUnit files
 
-This will only work if JUnit is in the path of your environment and you have navigated to the correct folder. It is therefore **recommended** that you test using an IDE. 
+ 
+###### Outputs:
+All of the tests should pass.
 
-All of the tests should pass. Some of the tests may output data as the methods they call do. 
+**BagTest Outputs: (Only those tests that give an output)**
+
+testBagConstructorInvalidFile --> 
+
+    Some of the files cannot be found.
+
+testBagConstructorNegativeNumbers --> 
+
+    Negative numbers exist in at least bag: negativeNumbersBag.txt
+
+testBagConstructorInvalidLength --> 
+
+    The quantity of numbers is not big enough in at least bag: testBagConstructorDuplicatesBag.txt
+
+testBagConstructorLetters --> 
+
+    Invalid number formats exist in at least bag: invalidNumbersBag.txt
+
+**PebbleGameTest Outputs: (Only those tests that give an output)**
+
+testPickBagAndPebble -->    
+    
+    Dave has drawn *number* from bag *X/Y/Z*
+    
+    Dave hand is [*number*]                 
+
+testStartGame --> 
+
+    Running the game...
+    
+    *a game log*
+
+testPebbleGameConstructorInvalidFile --> 
+
+    Some of the files cannot be found
+
+testHasWonWinningHand --> 
+
+    Player 0 has won with [2, 4, 6, 8, 10, 10, 12, 14, 16, 18]
+
+
 
 The TestSuite class has **100% class coverage** and **89% line coverage** from the combined files: 
 
